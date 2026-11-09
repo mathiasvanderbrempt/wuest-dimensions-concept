@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Interactive Zürich scene</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #0F0D26; --ink: #FFFFFF; --muted: #B9B3EC; --soft: #CFCBF3;
+    --coral: #E5443A; --signal: #D9392F; --lav: #9C94E3;
+    --font: 'Inter Tight', 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--night); color: var(--ink); font-family: var(--font); }
+  .hero { position: relative; height: 100vh; height: 100svh; overflow: hidden; isolation: isolate; }
+  main.layer { position: absolute; right: 20px; bottom: 20px; width: min(340px, 46%); padding: 0; display: block; }
+  main.layer .side { flex: none; width: 100%; }
+  #scene, .fallback { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .fallback { object-fit: cover; object-position: 64% 50%; z-index: 0; }
+  #scene { z-index: 1; outline: none; touch-action: none; }
+  .clouds { position: absolute; inset: -2%; width: 104%; height: 104%; object-fit: cover; z-index: 2; pointer-events: none; }
+  .scrim { position: absolute; inset: 0; z-index: 2; pointer-events: none;
+    background: linear-gradient(90deg, rgba(15,13,38,0.82) 0%, rgba(15,13,38,0.5) 30%, rgba(15,13,38,0) 56%); }
+  .layer { position: relative; z-index: 3; pointer-events: none; }
+  .layer a, .layer button, .layer .glass { pointer-events: auto; }
+  [hidden] { display: none !important; }
+  header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 40px; padding: 28px clamp(24px, 5vw, 72px); }
+  .lockup { display: flex; align-items: center; gap: 10px; pointer-events: auto; }
+  .word { font-size: 26px; line-height: 1; letter-spacing: -0.035em; white-space: nowrap; }
+  .word b { font-weight: 700; } .word span { font-weight: 300; }
+  nav { display: flex; flex-wrap: wrap; gap: 4px 32px; align-items: center; }
+  nav a { color: #fff; text-decoration: none; font-size: 15px; padding: 12px 0; display: inline-flex; align-items: center; gap: 10px; }
+  nav a:hover { color: var(--soft); }
+  main { flex: 1; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 40px; padding: 24px clamp(24px, 5vw, 72px); }
+  .copy { flex: 1 1 380px; max-width: 540px; min-width: 0; display: flex; flex-direction: column; gap: 28px; }
+  h1 { margin: 0; font-size: clamp(46px, 5.8vw, 84px); line-height: 0.98; font-weight: 500; letter-spacing: -0.045em; }
+  .lede { margin: 0; font-size: 19px; line-height: 1.5; color: var(--soft); max-width: 470px; }
+  .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 4px; }
+  .btn { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding: 0 22px; border-radius: 10px; color: #fff; text-decoration: none; font-size: 15px; font-weight: 500; font-family: var(--font); border: 0; cursor: pointer; }
+  .btn svg { transition: transform .15s ease; } .btn:hover svg { transform: translateX(4px); }
+  .btn-primary { background: var(--signal); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.28), 0 1px 2px rgba(27,24,56,0.18), 0 10px 22px -12px rgba(217,57,47,0.6); } .btn-primary:hover { background: #C4302A; }
+  .btn-ghost { background: linear-gradient(165deg, rgba(255,255,255,0.13), rgba(255,255,255,0.05)); backdrop-filter: blur(16px) saturate(1.3); -webkit-backdrop-filter: blur(16px) saturate(1.3); box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.24), inset 0 0 0 0.5px rgba(255,255,255,0.16), 0 10px 22px -14px rgba(4,2,20,0.7); } .btn-ghost:hover { background: linear-gradient(165deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08)); }
+  @media (prefers-reduced-motion: reduce) { .btn svg { transition: none; } }
+  .side { flex: 0 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+  .glass { background: linear-gradient(165deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+    backdrop-filter: blur(20px) saturate(1.3); -webkit-backdrop-filter: blur(20px) saturate(1.3);
+    box-shadow: inset 0 0.5px 0 rgba(255,255,255,0.18), inset 0 0 0 0.5px rgba(255,255,255,0.09), 0 30px 70px -30px rgba(4,2,20,0.8);
+    border-radius: 16px; }
+  .card { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  .card h2 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.02em; }
+  .sub { font-size: 14px; color: var(--muted); }
+  .hair { height: 0; border-top: 0.5px solid rgba(255,255,255,0.14); }
+  .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .fact { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .fact span:first-child { font-size: 12px; color: var(--muted); }
+  .fact span:last-child { font-size: 17px; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .source { font-size: 12px; color: var(--muted); }
+  .big { font-size: 34px; font-weight: 500; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .big small { font-size: 16px; font-weight: 400; color: var(--muted); letter-spacing: 0; }
+  .range { position: relative; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.10); }
+  .range i { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: rgba(156,148,227,0.55); }
+  .range b { position: absolute; top: -5px; width: 2px; height: 18px; background: var(--coral); box-shadow: 0 0 10px var(--coral); }
+  .row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .comps { padding: 14px 20px; flex-direction: row; align-items: center; justify-content: space-between; gap: 16px; }
+  .dot { width: 10px; height: 10px; border-radius: 999px; background: #C4BFF5; box-shadow: 0 0 12px var(--lav); display: inline-block; }
+  .link { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-size: 14px; font-weight: 500; text-decoration: none; min-height: 44px; background: none; border: 0; cursor: pointer; font-family: var(--font); padding: 0; }
+  .link:hover { color: var(--soft); }
+  footer { padding: 0 clamp(24px, 5vw, 72px) 28px; }
+  .status { border-radius: 12px; padding: 12px 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 24px; font-size: 13px; color: var(--muted); }
+  .status strong { color: #fff; font-weight: 500; }
+  .keys { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  .key { display: inline-flex; align-items: center; gap: 8px; }
+  .k-floor { width: 16px; height: 3px; background: var(--coral); box-shadow: 0 0 8px var(--coral); }
+  .k-ring { width: 12px; height: 12px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px var(--coral); }
+  .k-comp { width: 8px; height: 8px; border-radius: 999px; background: #C4BFF5; }
+  .tip { position: absolute; z-index: 4; pointer-events: none; padding: 8px 12px; border-radius: 10px; font-size: 13px; white-space: nowrap; opacity: 0; transform: translate(-50%, calc(-100% - 14px)); transition: opacity .12s; }
+  .tip.on { opacity: 1; }
+  .hint { font-size: 13px; color: var(--muted); }
+  @media (max-width: 640px) {
+    main.layer { left: 12px; right: 12px; bottom: 12px; width: auto; }
+    main.layer .card:nth-child(2) { display: none; }
+    .scrim { background: linear-gradient(180deg, rgba(15,13,38,0.85) 0%, rgba(15,13,38,0.4) 55%, rgba(15,13,38,0.85) 100%); }
+    .side { flex-basis: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) { .tip { transition: none; } }
+</style>
+<script type="importmap">
+{ "imports": { "three": "./vendor/three.module.min.js", "three/addons/": "./vendor/jsm/" } }
+</script>
+</head>
+<body>
+<div class="hero">
+  <img class="fallback" src="fallback.jpg" alt="Dark 3D model of central Zürich with the Alte Börse at Bleicherweg 5 lit in coral">
+  <canvas id="scene" tabindex="0" aria-label="Interactive 3D model of central Zürich. Drag to orbit, scroll to zoom, hover a building to see its floors, click to select a floor. Arrow keys move the selected floor up or down, Escape returns to the Alte Börse."></canvas>
+  <img class="clouds" src="clouds.png" alt="" aria-hidden="true">
+  <div class="tip glass" id="tip" role="presentation"></div>
+
+
+  <main class="layer" aria-label="Selected building details">
+    <div class="side" aria-live="polite">
+      <section class="glass card" aria-label="Selected building">
+        <div style="display:flex;flex-direction:column;gap:4px">
+          <h2 id="b-name">Alte Börse</h2>
+          <span class="sub" id="b-addr">Bleicherweg 5, 8001 Zürich</span>
+        </div>
+        <div class="hair"></div>
+        <div class="facts">
+          <div class="fact"><span>Built</span><span id="b-year">1930</span></div>
+          <div class="fact"><span>Floors</span><span id="b-floors">7</span></div>
+          <div class="fact"><span>Footprint</span><span id="b-area">1'899 m²</span></div>
+        </div>
+        <div class="row"><span id="b-use">Office</span><span id="b-height">Height 30.3 m</span></div>
+        <button class="link" id="b-reset" type="button" hidden>Back to the Alte Börse <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M4 12h16M14 6l6 6-6 6"></path></svg></button>
+      </section>
+      <section class="glass card" aria-label="Office rent">
+        <span class="sub" id="r-label">Median office asking rent, selected floor</span>
+        <div class="big"><span id="r-med">CHF 640</span> <small>/ m² / yr</small></div>
+        <div class="range"><i id="r-band" style="left:24%;width:46%"></i><b id="r-mark" style="left:calc(47% - 1px)"></b></div>
+        <div class="row"><span id="r-q1">Q1 CHF 520</span><span id="r-q3">Q3 CHF 760</span></div>
+      </section>
+    </div>
+  </main>
+
+  <div hidden><strong id="s-area"></strong><span id="hint"></span><span id="c-text"></span></div>
+</div>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+const canvas = document.getElementById('scene');
+const tip = document.getElementById('tip');
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "'");
+
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+} catch (e) {
+  canvas.style.display = 'none';
+  throw e;
+}
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setClearColor(0x0F0D26, 1);
+
+const scene = new THREE.Scene();
+const FOG = new THREE.Color(0x100E2C);
+scene.fog = new THREE.FogExp2(FOG, 0.00055);
+
+const camera = new THREE.PerspectiveCamera(28, 1, 5, 6000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.06;
+controls.enablePan = false;
+controls.minPolarAngle = 0.55;
+controls.maxPolarAngle = 1.12;
+controls.minDistance = 230;
+controls.maxDistance = 1100;
+controls.autoRotate = !reduceMotion;
+controls.autoRotateSpeed = 0.35;
+controls.addEventListener('start', () => { controls.autoRotate = false; });
+
+// --- data
+const meta = await fetch('scene.json').then(r => r.json());
+const b64 = s => { const bin = atob(s); const u = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) u[i] = bin.charCodeAt(i); return u.buffer; };
+const bbuf = b64(meta.pos), wbuf = b64(meta.water);
+const B = meta.b;
+const raw = new Int16Array(bbuf);
+const pos = new Float32Array(raw.length);
+for (let i = 0; i < raw.length; i++) pos[i] = raw[i] * 0.1;
+const bid = new Float32Array(raw.length / 3);
+B.forEach((b, i) => { bid.fill(i, b.s * 3, (b.s + b.n) * 3); });
+
+const geo = new THREE.BufferGeometry();
+geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+geo.setAttribute('bid', new THREE.BufferAttribute(bid, 1));
+geo.computeVertexNormals();
+
+const targetIndex = B.findIndex(b => b.t);
+const uniforms = {
+  uClay: { value: new THREE.Color(0x27234F) },
+  uSel: { value: new THREE.Color(0x4A4290) },
+  uHover: { value: new THREE.Color(0x6E66B8) },
+  uFog: { value: FOG },
+  uFogDensity: { value: 0.00055 },
+  uSelected: { value: targetIndex },
+  uHovered: { value: -1 },
+  uHFloor: { value: new THREE.Vector2(-1, -1) },
+  uHFh: { value: 3.6 },
+  uSFloor: { value: new THREE.Vector2(-1, -1) },
+  uLight: { value: new THREE.Vector3(-0.55, 0.75, 0.4).normalize() },
+};
+const mat = new THREE.ShaderMaterial({
+  uniforms,
+  vertexShader: `
+    attribute float bid;
+    varying vec3 vN; varying float vBid; varying float vDist; varying float vY;
+    void main() {
+      vN = normalize(normal);
+      vBid = bid; vY = position.y;
+      vec4 mv = modelViewMatrix * vec4(position, 1.0);
+      vDist = -mv.z;
+      gl_Position = projectionMatrix * mv;
+    }`,
+  fragmentShader: `
+    uniform vec3 uClay, uSel, uHover, uFog, uLight;
+    uniform float uFogDensity, uSelected, uHovered, uHFh;
+    uniform vec2 uHFloor, uSFloor;
+    varying vec3 vN; varying float vBid; varying float vDist; varying float vY;
+    void main() {
+      vec3 n = normalize(vN);
+      if (!gl_FrontFacing) n = -n;
+      vec3 base = uClay;
+      if (abs(vBid - uSelected) < 0.5) base = uSel;
+      else if (abs(vBid - uHovered) < 0.5) base = mix(uClay, uHover, 0.55);
+      float diff = max(dot(n, uLight), 0.0);
+      float up = max(n.y, 0.0);
+      float side = 1.0 - abs(n.y);
+      vec3 col = base * (0.34 + 0.78 * diff + 0.28 * up);
+      col += vec3(0.05, 0.045, 0.11) * side * smoothstep(0.0, 30.0, vY);
+      bool isHov = abs(vBid - uHovered) < 0.5;
+      bool isSel = abs(vBid - uSelected) < 0.5;
+      if (isHov) {
+        // faint floor lines on the hovered building, and the floor under the cursor lit
+        float fl = fract(vY / uHFh);
+        float line = (1.0 - smoothstep(0.0, 0.06, fl)) * side;
+        col += vec3(0.16, 0.15, 0.34) * line;
+        if (vY > uHFloor.x && vY < uHFloor.y) col = mix(col, vec3(0.55, 0.50, 0.95), 0.6 * side) + vec3(0.06, 0.05, 0.14) * side;
+      }
+      if (isSel && vY > uSFloor.x && vY < uSFloor.y) col = mix(col, vec3(0.92, 0.30, 0.24), 0.5 * side);
+      float f = 1.0 - exp(-pow(uFogDensity * vDist, 2.0));
+      gl_FragColor = vec4(mix(col, uFog, f), 1.0);
+      #include <colorspace_fragment>
+    }`,
+  side: THREE.DoubleSide,
+});
+const city = new THREE.Mesh(geo, mat);
+scene.add(city);
+const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo, 35), new THREE.LineBasicMaterial({ color: 0x7A72C8, transparent: true, opacity: 0.18 }));
+scene.add(edges);
+
+// ground and water
+const ground = new THREE.Mesh(new THREE.PlaneGeometry(6000, 6000), new THREE.MeshBasicMaterial({ color: 0x110F2E }));
+ground.rotation.x = -Math.PI / 2;
+scene.add(ground);
+const wraw = new Int16Array(wbuf);
+const wpos = new Float32Array((wraw.length / 2) * 3);
+for (let i = 0, j = 0; i < wraw.length; i += 2, j += 3) { wpos[j] = wraw[i] * 0.1; wpos[j + 1] = 0.15; wpos[j + 2] = wraw[i + 1] * 0.1; }
+const wgeo = new THREE.BufferGeometry();
+wgeo.setAttribute('position', new THREE.BufferAttribute(wpos, 3));
+const water = new THREE.Mesh(wgeo, new THREE.MeshBasicMaterial({ color: 0x1E1A55, side: THREE.DoubleSide }));
+scene.add(water);
+
+// --- highlight layer: floor band, ring, comparables
+function gradTex(radial) {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const x = c.getContext('2d');
+  const g = radial ? x.createRadialGradient(32, 32, 0, 32, 32, 32) : x.createLinearGradient(0, 0, 0, 64);
+  if (radial) { g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(0.25, 'rgba(255,255,255,0.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); }
+  else { g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(0.5, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)'); }
+  x.fillStyle = g; x.fillRect(0, 0, 64, 64);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+const RADIAL = gradTex(true), VERT = gradTex(false);
+const HOT = new THREE.Color(0xFFB4A6);
+const hotMat = new THREE.MeshBasicMaterial({ color: HOT, side: THREE.DoubleSide, fog: false });
+const fillMat = new THREE.MeshBasicMaterial({ color: 0xE5443A, transparent: true, opacity: 0.6, side: THREE.DoubleSide, depthWrite: false, fog: false });
+const haloMat = new THREE.MeshBasicMaterial({ color: 0xFF5A48, map: VERT, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false, fog: false });
+const poolMat = new THREE.SpriteMaterial({ color: 0xE5443A, map: RADIAL, transparent: true, opacity: 0.32, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+const ringMat = new THREE.MeshBasicMaterial({ color: 0xF0705F, transparent: true, opacity: 0.9, side: THREE.DoubleSide, depthWrite: false });
+const ringGlowMat = new THREE.MeshBasicMaterial({ color: 0xE5443A, transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, side: THREE.DoubleSide, depthWrite: false });
+const pinMat = new THREE.MeshBasicMaterial({ color: 0xE6E3FF, fog: false });
+const pinGlowMat = new THREE.SpriteMaterial({ color: 0x9C94E3, map: RADIAL, transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
+const stemMat = new THREE.LineBasicMaterial({ color: 0x9C94E3, transparent: true, opacity: 0.7 });
+const hi = new THREE.Group();
+scene.add(hi);
+
+function bandGeometry(fp, z1, z2) {
+  const fill = [], strips = [], halo = [], huv = [];
+  const t = 0.3, hz1 = z1 - 3, hz2 = z2 + 3;
+  for (let i = 0; i < fp.length - 1; i++) {
+    const [x0, z0] = fp[i], [x1, zz1] = fp[i + 1];
+    fill.push(x0, z1, z0, x1, z1, zz1, x1, z2, zz1, x0, z1, z0, x1, z2, zz1, x0, z2, z0);
+    for (const y of [z1, z2]) strips.push(x0, y - t, z0, x1, y - t, zz1, x1, y + t, zz1, x0, y - t, z0, x1, y + t, zz1, x0, y + t, z0);
+    // halo sits a little outside the wall
+    const ex = x1 - x0, ez = zz1 - z0, L = Math.hypot(ex, ez) || 1, nx = ez / L * 0.6, nz = -ex / L * 0.6;
+    for (const s of [1, -1]) {
+      const a0 = x0 + nx * s, b0 = z0 + nz * s, a1 = x1 + nx * s, b1 = zz1 + nz * s;
+      halo.push(a0, hz1, b0, a1, hz1, b1, a1, hz2, b1, a0, hz1, b0, a1, hz2, b1, a0, hz2, b0);
+      huv.push(0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0);
+    }
+  }
+  const g1 = new THREE.BufferGeometry(); g1.setAttribute('position', new THREE.Float32BufferAttribute(fill, 3));
+  const g2 = new THREE.BufferGeometry(); g2.setAttribute('position', new THREE.Float32BufferAttribute(strips, 3));
+  const g3 = new THREE.BufferGeometry(); g3.setAttribute('position', new THREE.Float32BufferAttribute(halo, 3)); g3.setAttribute('uv', new THREE.Float32BufferAttribute(huv, 2));
+  return [g1, g2, g3];
+}
+
+function hash(s) { let h = 2166136261; for (const c of String(s)) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return (h >>> 0); }
+
+let comps = [];
+function floorsOf(b) {
+  const g = b.g || {};
+  const floors = Math.max(1, g.f || Math.round(b.h / 3.6));
+  return { floors, fh: b.h / floors };
+}
+function floorName(level) { return level === 0 ? 'ground floor' : `floor ${level}`; }
+let curSel = -1, curLevel = 0;
+function select(i, fromUser, levelIn) {
+  const b = B[i];
+  uniforms.uSelected.value = i;
+  hi.children.forEach(c => c.geometry && c.geometry.dispose());
+  hi.clear();
+  const g = b.g || {};
+  const { floors, fh } = floorsOf(b);
+  const level = Math.max(0, Math.min(floors - 1, levelIn ?? (b.t ? 3 : Math.floor(floors / 2))));
+  curSel = i; curLevel = level;
+  uniforms.uSFloor.value.set(fh * level, fh * (level + 1));
+  const z1 = Math.min(b.h - 1, fh * level + 0.4), z2 = Math.min(b.h - 0.3, z1 + fh * 0.9);
+  if (b.fp && b.fp.length > 2) {
+    const [g1, g2, g3] = bandGeometry(b.fp, z1, z2);
+    hi.add(new THREE.Mesh(g1, fillMat), new THREE.Mesh(g2, hotMat), new THREE.Mesh(g3, haloMat));
+  }
+  const pool = new THREE.Sprite(poolMat); pool.scale.set(140, 140, 1); pool.position.set(b.c[0], (z1 + z2) / 2, b.c[1]);
+  hi.add(pool);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(149.3, 150.7, 160), ringMat);
+  ring.rotation.x = -Math.PI / 2; ring.position.set(b.c[0], 0.4, b.c[1]);
+  const ringGlow = new THREE.Mesh(new THREE.RingGeometry(145, 155, 160), ringGlowMat);
+  ringGlow.rotation.x = -Math.PI / 2; ringGlow.position.set(b.c[0], 0.35, b.c[1]);
+  hi.add(ring, ringGlow);
+  // comparables: deterministic pick of taller buildings inside the ring
+  const cand = B.map((o, k) => ({ o, k, d: Math.hypot(o.c[0] - b.c[0], o.c[1] - b.c[1]) }))
+    .filter(x => x.k !== i && x.d < 150 && x.o.h > 9)
+    .sort((p, q) => (hash(p.o.egid + b.egid) % 1000) - (hash(q.o.egid + b.egid) % 1000))
+    .slice(0, 7);
+  comps = cand;
+  const sph = new THREE.SphereGeometry(1.4, 16, 12);
+  for (const { o } of cand) {
+    const m = new THREE.Mesh(sph, pinMat); m.position.set(o.c[0], o.h + 9, o.c[1]); hi.add(m);
+    const gl = new THREE.Sprite(pinGlowMat); gl.scale.set(16, 16, 1); gl.position.copy(m.position); hi.add(gl);
+    const lg = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(o.c[0], o.h + 0.5, o.c[1]), new THREE.Vector3(o.c[0], o.h + 8, o.c[1])]);
+    hi.add(new THREE.Line(lg, stemMat));
+  }
+  goal.set(b.c[0], Math.min(b.h * 0.4, 14), b.c[1]);
+  updateCards(b, i, level, cand.length);
+}
+
+function updateCards(b, i, level, nComps) {
+  const g = b.g || {};
+  document.getElementById('b-name').textContent = b.t ? 'Alte Börse' : (g.adr || `Building ${b.egid || i}`);
+  document.getElementById('b-addr').textContent = b.t ? 'Bleicherweg 5, 8001 Zürich' : (g.plz ? `${g.plz}${b.egid ? `, EGID ${b.egid}` : ''}` : (b.egid ? `EGID ${b.egid}` : 'No register entry'));
+  document.getElementById('b-year').textContent = g.y || '–';
+  document.getElementById('b-floors').textContent = g.f || `~${Math.max(1, Math.round(b.h / 3.6))}`;
+  document.getElementById('b-area').textContent = `${fmt(g.ga || b.a)} m²`;
+  document.getElementById('b-use').textContent = g.k || 'Building';
+  document.getElementById('b-height').textContent = `Height ${b.h.toFixed(1)} m`;
+  document.getElementById('b-reset').hidden = !!b.t;
+  const h = hash(b.egid || i);
+  const med = b.t ? 640 : 380 + (h % 420);
+  const q1 = Math.round(med * 0.81 / 10) * 10, q3 = Math.round(med * 1.19 / 10) * 10;
+  document.getElementById('r-label').textContent = `Median asking rent, ${floorName(level)}`;
+  document.getElementById('r-med').textContent = `CHF ${fmt(med)}`;
+  document.getElementById('r-q1').textContent = `Q1 CHF ${fmt(q1)}`;
+  document.getElementById('r-q3').textContent = `Q3 CHF ${fmt(q3)}`;
+  const lo = 24 + (h % 9), w = 42 + (h % 11);
+  document.getElementById('r-band').style.left = `${lo}%`;
+  document.getElementById('r-band').style.width = `${w}%`;
+  document.getElementById('r-mark').style.left = `calc(${lo + w / 2}% - 1px)`;
+  document.getElementById('c-text').textContent = `${nComps} comparables within 150 m`;
+}
+document.getElementById('b-reset').addEventListener('click', () => select(targetIndex, true));
+
+// --- camera start
+const goal = new THREE.Vector3();
+select(targetIndex, false);
+controls.target.copy(goal);
+camera.position.set(goal.x - 400, 500, goal.z + 560);
+controls.update();
+
+
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  // push the focus to the right on wide screens so the headline stays clear
+  if (w > 640) camera.setViewOffset(w, h, w * 0.12, h * 0.06, w, h); else camera.clearViewOffset();
+  camera.updateProjectionMatrix();
+}
+new ResizeObserver(resize).observe(canvas);
+resize();
+
+// --- picking
+const ray = new THREE.Raycaster();
+const ndc = new THREE.Vector2();
+let downAt = null, pending = null;
+function pick(ev) {
+  const r = canvas.getBoundingClientRect();
+  ndc.set(((ev.clientX - r.left) / r.width) * 2 - 1, -((ev.clientY - r.top) / r.height) * 2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hit = ray.intersectObject(city, false)[0];
+  if (!hit) return { i: -1 };
+  const i = bid[hit.face.a];
+  const { floors, fh } = floorsOf(B[i]);
+  const level = Math.max(0, Math.min(floors - 1, Math.floor(hit.point.y / fh)));
+  return { i, level, floors, fh };
+}
+canvas.addEventListener('pointermove', ev => {
+  pending = ev;
+});
+canvas.addEventListener('pointerleave', () => { pending = null; uniforms.uHovered.value = -1; tip.classList.remove('on'); canvas.style.cursor = ''; });
+canvas.addEventListener('pointerdown', ev => { downAt = [ev.clientX, ev.clientY]; });
+canvas.addEventListener('pointerup', ev => {
+  if (!downAt) return;
+  const moved = Math.hypot(ev.clientX - downAt[0], ev.clientY - downAt[1]);
+  downAt = null;
+  if (moved > 6) return;
+  const p = pick(ev);
+  if (p.i >= 0) { controls.autoRotate = false; select(p.i, true, p.level); }
+});
+canvas.addEventListener('keydown', ev => {
+  if (ev.key === 'Escape') select(targetIndex, true);
+  if (ev.key === 'ArrowUp' || ev.key === 'ArrowDown') {
+    ev.preventDefault();
+    const { floors } = floorsOf(B[curSel]);
+    const next = Math.max(0, Math.min(floors - 1, curLevel + (ev.key === 'ArrowUp' ? 1 : -1)));
+    if (next !== curLevel) select(curSel, true, next);
+  }
+});
+function hover() {
+  if (!pending) return;
+  const ev = pending; pending = null;
+  const p = pick(ev), i = p.i;
+  uniforms.uHovered.value = i;
+  canvas.style.cursor = i >= 0 ? 'pointer' : 'grab';
+  if (i >= 0) {
+    const b = B[i], g = b.g || {};
+    uniforms.uHFh.value = p.fh;
+    uniforms.uHFloor.value.set(p.fh * p.level, p.fh * (p.level + 1));
+    const name = b.t ? 'Alte Börse' : (g.adr || 'Building');
+    const fl = p.level === 0 ? 'ground floor' : `floor ${p.level} of ${p.floors - 1}`;
+    tip.textContent = `${name}, ${fl}`;
+    tip.style.left = `${ev.clientX}px`; tip.style.top = `${ev.clientY}px`;
+    tip.classList.add('on');
+  } else tip.classList.remove('on');
+}
+
+// --- loop
+const clock = new THREE.Clock();
+function frame() {
+  const dt = Math.min(clock.getDelta(), 0.05);
+  controls.target.lerp(goal, 1 - Math.pow(0.002, dt));
+  controls.update();
+  hover();
+  const t = clock.elapsedTime;
+  if (!reduceMotion) haloMat.opacity = 0.75 + 0.2 * Math.sin(t * 2.2);
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+frame();
+document.querySelector('.fallback').style.visibility = 'hidden';
+</script>
+</body>
+</html>
