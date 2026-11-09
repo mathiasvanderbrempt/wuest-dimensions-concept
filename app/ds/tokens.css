@@ -1,0 +1,130 @@
+/* Karta — generated from tokens.json */
+:root, [data-theme="light"] {
+  --shell: #f0f0f2;
+  --surface: #f6f6f6;
+  --surface-band: #f1f1f1;
+  --surface-raised: #ffffff;
+  --fill-hover: #eeeef0;
+  --fill-hover-raised: #f4f4f5;
+  --fill-selected: #e7e6e9;
+  --fill-pressed: #e4e4e6;
+  --line: #e6e6e8;
+  --line-strong: #d4d4d8;
+  --ink: #141416;
+  --ink-secondary: #3a3a3e;
+  --ink-tertiary: #5b5a60;
+  --ink-muted: #6b6b70;
+  --ink-placeholder: #8e8e93;
+  --ink-faint: #a2a1a4;
+  --inverse: #1e1e20;
+  --inverse-hover: #2c2c2f;
+  --on-inverse: #ffffff;
+  --on-inverse-muted: #b8b8bc;
+  --positive-bg: #d1eed5;
+  --positive-ink: #1e4a26;
+  --info-bg: #cfe2e8;
+  --info-ink: #1f3840;
+  --attention-bg: #ebe9c6;
+  --attention-ink: #4f4c22;
+  --neutral-bg: #e8e8e8;
+  --neutral-ink: #4a4a4f;
+  --accent-bg: #f3e3f8;
+  --accent-ink: #7b3aa0;
+  --negative-bg: #f6e0d3;
+  --negative-ink: #7a3413;
+  --focus-ring: #141416;
+  --viz-line: var(--ink);
+  --viz-track: #cacacd;
+  --viz-grid: #e6e6e8;
+  --viz-cat-1: #3a3a3e;
+  --viz-cat-2: #3f7488;
+  --viz-cat-3: #4d8a57;
+  --viz-cat-4: #8a5aa6;
+  --viz-cat-5: #c26a3d;
+  --viz-cat-6: #b08a2e;
+  --viz-seq-1: #e6f0f3;
+  --viz-seq-2: #cfe2e8;
+  --viz-seq-3: #a9c9d4;
+  --viz-seq-4: #7fa9b8;
+  --viz-seq-5: #57889b;
+  --viz-seq-6: #3a6878;
+  --viz-seq-7: #1f3840;
+  --viz-div-neg-3: #8f3d16;
+  --viz-div-neg-2: #c26a3d;
+  --viz-div-neg-1: #e9b896;
+  --viz-div-mid: #ececee;
+  --viz-div-pos-1: #a9c9d4;
+  --viz-div-pos-2: #57889b;
+  --viz-div-pos-3: #1f3840;
+  --map-land: #efeff0;
+  --map-water: #d6e2e7;
+  --map-park: #e3eadf;
+  --map-road: #ffffff;
+  --map-road-casing: #dcdce0;
+  --map-boundary: #86868c;
+  --map-label: #5b5a60;
+  --map-parcel-selected: var(--ink);
+  --shadow-panel: 0 0 0 1px rgba(20, 20, 22, 0.06);
+  --shadow-control: 0 0 0 1px rgba(20, 20, 22, 0.06), 0 1px 2px rgba(20, 20, 22, 0.04);
+  --shadow-row-selected: 0 0 0 1px rgba(20, 20, 22, 0.04), 0 1px 3px rgba(20, 20, 22, 0.06), 0 4px 12px rgba(20, 20, 22, 0.04);
+  --shadow-menu: 0 0 0 1px rgba(20, 20, 22, 0.06), 0 2px 6px rgba(20, 20, 22, 0.06), 0 12px 32px rgba(20, 20, 22, 0.10);
+  --shadow-halo: 0 0 0 1px rgba(20, 20, 22, 0.10), 0 0 0 7px rgba(20, 20, 22, 0.05), 0 0 0 8px rgba(255, 255, 255, 0.60), 0 16px 40px rgba(20, 20, 22, 0.12);
+  --shadow-inverse: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.90), 0 1px 3px rgba(20, 20, 22, 0.25);
+  --shadow-bulkbar: 0 0 0 1px rgba(255, 255, 255, 0.90), 0 8px 24px rgba(20, 20, 22, 0.18);
+  --shadow-focus: 0 0 0 2px #ffffff, 0 0 0 4px #141416;
+}
+:root {
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-6: 6px;
+  --space-8: 8px;
+  --space-10: 10px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+  --size-sidebar: 288px;
+  --size-panel-inset: 8px;
+  --size-tabbar: 44px;
+  --size-kpi-band: 148px;
+  --size-toolbar: 48px;
+  --size-table-header: 40px;
+  --size-row: 40px;
+  --size-row-highlight: 32px;
+  --size-control: 28px;
+  --size-control-lg: 32px;
+  --size-nav-item: 30px;
+  --size-chip: 22px;
+  --size-checkbox: 16px;
+  --size-avatar-sm: 24px;
+  --size-avatar-md: 28px;
+  --size-icon: 16px;
+  --size-bulkbar: 44px;
+  --size-hovercard: 360px;
+  --size-menu-min: 168px;
+  --z-sticky: 10;
+  --z-bulkbar: 30;
+  --z-menu: 40;
+  --z-hovercard: 50;
+  --font-sans: Geist, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.figure-lg { font-family: var(--font-sans); font-size: 32px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; }
+.kpi-value { font-family: var(--font-sans); font-size: 24px; line-height: 28px; font-weight: 400; letter-spacing: -0.01em; }
+.figure-sub { font-family: var(--font-sans); font-size: 11px; line-height: 14px; font-weight: 400; }
+.workspace-name { font-family: var(--font-sans); font-size: 15px; line-height: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.title { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 500; }
+.body-lg { font-family: var(--font-sans); font-size: 14px; line-height: 20px; font-weight: 400; }
+.body { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 400; }
+.body-medium { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 500; }
+.caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 400; }
+.column-header { font-family: var(--font-sans); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; }
