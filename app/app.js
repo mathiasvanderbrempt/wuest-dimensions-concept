@@ -106,6 +106,8 @@
       var app = root.querySelector('.kc-app'), aside = app && app.querySelector(':scope > .k-sidebar');
       if (app && aside) { chrome(app, aside); apply(); }
       stage();
+      // page add-ons (maps.js, switches.js) run after every render
+      (window.KartaHooks || []).forEach(function (fn) { try { fn(root); } catch (e) { if (window.console) console.warn(e); } });
     }
   };
 })();

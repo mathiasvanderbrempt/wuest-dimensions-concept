@@ -148,6 +148,7 @@
   html.ka-nav-open .kc-app { padding-left: 0; }
   html:not(.ka-nav-open) .kc-app > .k-sidebar { display: none; }
   html.ka-nav-open .k-sidebar .k-nav-item { height: 40px; }
+  html.ka-nav-open .k-sidebar .k-quick { height: 40px; }
 
   /* top bar: the mark and wordmark, a menu button that opens the navigation */
   .ka-topbar { display: flex; align-items: center; gap: 8px; position: sticky; top: 0; z-index: 40; height: 52px; padding: 0 10px 0 14px; box-sizing: border-box; flex: none;
@@ -235,3 +236,13 @@
   .kc-lq-table .k-td:nth-child(4) { padding-right: 12px; }
   .kc-lq-controls { padding: 6px 16px 12px; }
 }
+
+/* ================= tabs and switch options without content (switches.js) ================= */
+.ka-inert { cursor: default !important; }
+.k-tab.ka-inert:hover { color: var(--ink-muted); }
+.kc-seg button.ka-inert, .kc-seg button.ka-inert:hover { background: transparent; }
+
+/* ================= rental listings: charts only, table only (switches.js) ================= */
+.kc-main--map.ka-view-charts > .kc-ls-map, .kc-main--map.ka-view-table > .kc-ls-map,
+.kc-main--map.ka-view-charts .kc-ls-stage, .kc-main--map.ka-view-table .kc-ls-stage { display: none; }
+.kc-main--map.ka-view-table > .kc-body > .kc-grid:not(:has(> .s12)):not(:has(> .kc-ls-sel)) { display: none; }

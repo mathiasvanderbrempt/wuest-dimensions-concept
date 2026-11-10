@@ -1,0 +1,40 @@
+/* Karta concept app: live maps (see maps.js). The map element sits in the slot the static drawing used. */
+.ka-map { position: absolute; inset: 0; }
+.kc-map > .ka-map { border-radius: inherit; overflow: hidden; }
+.ka-map .maplibregl-canvas { outline: none; }
+.ka-map:focus-visible, .ka-map .maplibregl-canvas:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--signal-300); }
+.ka-map .maplibregl-cooperative-gesture-screen { font: inherit; font-size: 13px; line-height: 18px; padding: 16px; background: rgba(27, 24, 56, 0.32); }
+
+/* location and listings: the map lies under the page, so the page lets the pointer through where there is no card */
+.kc-main--map > .kc-lq-map { pointer-events: auto; }
+.kc-lq-map > svg.ka-ov { position: relative; display: block; overflow: visible; pointer-events: none; }
+.kc-main--map > .kc-body { pointer-events: none; }
+.kc-main--map > .kc-body .c-card, .kc-main--map .kc-lq-stage > * { pointer-events: auto; }
+.kc-lq-map .maplibregl-cooperative-gesture-screen { display: none; }
+.kc-lq-stage.ka-legend-off > .kc-lq-legend { display: none; }
+
+/* map controls that switch something on or off */
+.kc-map-ctrl button[aria-pressed="false"] { color: var(--ink-muted); opacity: 0.55; }
+.kc-map-ctrl button:hover { background: rgba(20, 20, 22, 0.05); }
+
+/* listings: full screen gives the map the height of the window */
+.kc-main--map.ka-map-full .kc-ls-stage { height: calc(100vh - 150px); min-height: 360px; }
+.kc-main--map.ka-map-full .kc-ls-map { height: calc(100vh + 130px); min-height: 640px;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 160px), transparent 100%), linear-gradient(to right, transparent 0, #000 30%, #000 96%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 110px, #000 calc(100% - 160px), transparent 100%), linear-gradient(to right, transparent 0, #000 30%, #000 96%, transparent 100%); }
+
+/* market: listing clusters, the selected municipality and its card */
+.ka-cluster { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--inverse); color: #fff; font-size: 11px; line-height: 1; font-weight: 500; box-shadow: 0 0 0 1.5px #fff, 0 2px 6px rgba(20, 22, 30, 0.2); font-variant-numeric: tabular-nums; }
+.ka-seldot { width: 10px; height: 10px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 0 2px #fff; }
+.kc-map.ka-pop-off > .kc-glass[style*="width:264px"] { display: none; }
+.kc-map.ka-cells-off > .kc-glass[style*="left:12px;bottom:12px"] { display: none; }
+@media (min-width: 768px) {
+  .kc-map.ka-map-live > .kc-glass[style*="width:264px"] { left: var(--ka-pop-x, 330px) !important; top: var(--ka-pop-y, 120px) !important; }
+}
+@media (max-width: 767px) {
+  .kc-map > .ka-map { inset: 0 0 auto 0; height: 480px; border-radius: 16px; background: var(--map-land);
+    box-shadow: 0 0 0 0.5px rgba(20, 20, 22, 0.045), 0 2px 6px rgba(20, 22, 30, 0.025), 0 20px 48px -20px rgba(20, 22, 30, 0.09); }
+}
+
+/* listings: the base map switch stays readable over the plan and the aerial image */
+.kc-ls-base > .kc-seg { background: rgba(255, 255, 255, 0.72); }
