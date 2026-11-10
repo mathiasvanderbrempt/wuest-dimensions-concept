@@ -1,6 +1,6 @@
 /* Karta — generated from tokens.json */
 :root, [data-theme="light"] {
-  --shell: #f4f3f7;
+  --shell: #f0f0f2;
   --surface: #f6f6f6;
   --surface-band: #f1f1f1;
   --surface-raised: #ffffff;
@@ -10,14 +10,14 @@
   --fill-pressed: #e4e4e6;
   --line: #e6e6e8;
   --line-strong: #d4d4d8;
-  --ink: #1b1838;
-  --ink-secondary: #3e3b57;
-  --ink-tertiary: #5e5a70;
-  --ink-muted: #6e6a80;
+  --ink: #141416;
+  --ink-secondary: #3a3a3e;
+  --ink-tertiary: #5b5a60;
+  --ink-muted: #6b6b70;
   --ink-placeholder: #8e8e93;
   --ink-faint: #a2a1a4;
-  --inverse: #1b1838;
-  --inverse-hover: #2a2650;
+  --inverse: #1e1e20;
+  --inverse-hover: #2c2c2f;
   --on-inverse: #ffffff;
   --on-inverse-muted: #b8b8bc;
   --positive-bg: #d1eed5;
@@ -32,16 +32,16 @@
   --accent-ink: #7b3aa0;
   --negative-bg: #f6e0d3;
   --negative-ink: #7a3413;
-  --focus-ring: #1b1838;
+  --focus-ring: #141416;
   --viz-line: var(--ink);
   --viz-track: #cacacd;
   --viz-grid: #e6e6e8;
-  --viz-cat-1: #2a2747;
-  --viz-cat-2: #6152e8;
+  --viz-cat-1: #3a3a3e;
+  --viz-cat-2: #3f7488;
   --viz-cat-3: #4d8a57;
-  --viz-cat-4: #9c94e3;
+  --viz-cat-4: #8a5aa6;
   --viz-cat-5: #c26a3d;
-  --viz-cat-6: #c9b5a4;
+  --viz-cat-6: #b08a2e;
   --viz-seq-1: #e6f0f3;
   --viz-seq-2: #cfe2e8;
   --viz-seq-3: #a9c9d4;
@@ -71,7 +71,7 @@
   --shadow-halo: 0 0 0 1px rgba(20, 20, 22, 0.10), 0 0 0 7px rgba(20, 20, 22, 0.05), 0 0 0 8px rgba(255, 255, 255, 0.60), 0 16px 40px rgba(20, 20, 22, 0.12);
   --shadow-inverse: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 0 0 1px rgba(255, 255, 255, 0.90), 0 1px 3px rgba(20, 20, 22, 0.25);
   --shadow-bulkbar: 0 0 0 1px rgba(255, 255, 255, 0.90), 0 8px 24px rgba(20, 20, 22, 0.18);
-  --shadow-focus: 0 0 0 2px #ffffff, 0 0 0 4px #1b1838;
+  --shadow-focus: 0 0 0 2px #ffffff, 0 0 0 4px #141416;
 }
 :root {
   --space-2: 2px;
@@ -116,38 +116,6 @@
   --z-bulkbar: 30;
   --z-menu: 40;
   --z-hovercard: 50;
-  --signal: #fa5848;
-  --signal-ink: #ae3328;
-  --signal-300: #ffb3a5;
-  --signal-400: #ff8d73;
-  --signal-soft: #fee3df;
-  --signal-glow: rgba(250, 88, 72, 0.28);
-  --brand-navy: #1b1838;
-  --brand-indigo: #6152e8;
-  --brand-indigo-deep: #3c33a0;
-  --brand-coral: #ff6450;
-  --brand-red: #d9392f;
-  --brand-frost: #f3eae1;
-  --brand-sand: #c9b5a4;
-  --brand-lavender: #b9b3ec;
-  --scene: #0f0d26;
-  --scene-raised: #1a1736;
-  --scene-line: rgba(255, 255, 255, 0.09);
-  --on-scene: #f3f3f4;
-  --on-scene-muted: #cbcad3;
-  --glass-panel-top: rgba(255, 255, 255, 0.74);
-  --glass-panel-bottom: rgba(243, 243, 246, 0.58);
-  --glass-card: rgba(255, 255, 255, 0.70);
-  --glass-dark: rgba(26, 23, 54, 0.72);
-  --bar: #2a2747;
-  --bar-2: #8d8aa3;
-  --bar-3: #c8c5d6;
-  --track: #e8e6ef;
-  --radius-overlay: 14px;
-  --shadow-card: inset 0 0.5px 0 #ffffff, inset 0 0 0 0.5px rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(20, 20, 22, 0.045), 0 2px 6px rgba(20, 22, 30, 0.025), 0 20px 48px -20px rgba(20, 22, 30, 0.09);
-  --shadow-glass: inset 0 0.5px 0 #ffffff, inset 0 0 0 0.5px rgba(255, 255, 255, 0.95), 0 0 0 0.5px rgba(20, 20, 22, 0.045), 0 4px 12px -4px rgba(20, 22, 30, 0.06), 0 24px 56px -20px rgba(20, 22, 30, 0.20);
-  --shadow-control-glass: inset 0 0.5px 0 #ffffff, inset 0 0 0 0.5px rgba(255, 255, 255, 0.9), 0 0 0 0.5px rgba(20, 20, 22, 0.045), 0 1px 3px rgba(20, 20, 22, 0.05), 0 6px 18px -6px rgba(20, 20, 22, 0.10);
-  --shadow-scene-card: inset 0 0.5px 0 rgba(255, 255, 255, 0.14), inset 0 0 0 0.5px rgba(255, 255, 255, 0.08), 0 16px 40px -18px rgba(0, 0, 0, 0.7);
   --font-sans: Geist, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .figure-lg { font-family: var(--font-sans); font-size: 32px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; }
@@ -160,7 +128,3 @@
 .body-medium { font-family: var(--font-sans); font-size: 13px; line-height: 20px; font-weight: 500; }
 .caption { font-family: var(--font-sans); font-size: 12px; line-height: 16px; font-weight: 400; }
 .column-header { font-family: var(--font-sans); font-size: 11px; line-height: 16px; font-weight: 500; letter-spacing: 0.04em; }
-.figure-xl { font-family: var(--font-sans); font-size: 48px; line-height: 52px; font-weight: 400; letter-spacing: -0.03em; }
-.figure-card { font-family: var(--font-sans); font-size: 36px; line-height: 40px; font-weight: 400; letter-spacing: -0.02em; }
-.page-title { font-family: var(--font-sans); font-size: 28px; line-height: 34px; font-weight: 400; letter-spacing: -0.01em; }
-.display { font-family: var(--font-sans); font-size: 32px; line-height: 36px; font-weight: 400; letter-spacing: -0.02em; }
