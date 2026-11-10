@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=1440">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:,">
 <meta name="robots" content="noindex, nofollow">
 <title>Add a property · Karta concept</title>
 <link rel="stylesheet" href="ds/tokens.css">
 <link rel="stylesheet" href="ds/bundle.css">
 <link rel="stylesheet" href="concept.css">
+<link rel="stylesheet" href="responsive.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&amp;family=Inter+Tight:wght@300;700&amp;display=swap">
 <style>
 body{margin:0;background:#f0f0f2}
@@ -18,6 +20,11 @@ a{color:#1B1838}a:hover{color:#3a3a3e}
 .ka-note a { color: var(--ink-tertiary); }
 .kc-nav-mini .ka-note { display: none; }
 .k-nav-item[aria-disabled="true"]:hover { background: transparent; color: var(--ink-tertiary); }
+/* QA: design system focus ring on the concept controls that fell back to the browser outline or had none */
+.kc-seg button:focus-visible, .c-period:focus-visible, .c-go:focus-visible, .kc-map-ctrl button:focus-visible, .kc-iconbtn-scene:focus-visible, .kc-ls-filter button:focus-visible, .kc-crumbs a:focus-visible, .k-ws:focus-visible, .k-row.is-layer:focus-visible { outline: none; box-shadow: var(--shadow-focus) !important; border-radius: var(--radius-md); }
+.kc-scene .kc-seg button:focus-visible, .kc-scene .kc-iconbtn-scene:focus-visible, .kc-scene .kc-crumbs a:focus-visible { box-shadow: 0 0 0 2px var(--scene), 0 0 0 4px var(--on-scene) !important; }
+.kc-sugg:focus-visible { box-shadow: inset 0 0 0 1.5px var(--signal-300); }
+.kc-addr-field input:focus-visible { outline: none; }
 </style>
 </head>
 <body>
@@ -89,13 +96,13 @@ a{color:#1B1838}a:hover{color:#3a3a3e}
 
 <sc-if value="{{isSearch}}" hint-placeholder-val="{{ true }}">
 <div class="kc-addr">
-<div style="display:flex;flex-direction:column;gap:4px"><h2>Add a location</h2><p>Type a Swiss address. Karta finds the building, loads its 3D shape and register data, and fills the gaps with demo data.</p></div>
+<div style="display:flex;flex-direction:column;gap:4px"><h2>Add a location</h2><p>Type a Swiss address. Karta finds the building, reads its register data, builds a massing model from the footprint and floor count, and fills the gaps with demo data.</p></div>
 <label class="kc-addr-field"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/> <path d="m21 21-4.3-4.3"/></svg><input type="text" placeholder="Street and number, postcode, town" aria-label="Address" value="{{query}}" onChange="{{onQuery}}" onKeyDown="{{onKey}}"></label>
 <div class="kc-sugg-list" role="listbox" aria-label="Matching addresses">
 <sc-for list="{{suggestions}}" as="s" hint-placeholder-count="5"><button class="kc-sugg" type="button" role="option" onClick="{{s.pick}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.57" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/> <circle cx="12" cy="10" r="3"/></svg><span><span>{{s.street}}</span><small>{{s.town}} · {{s.canton}}</small></span><span class="r">EGID {{s.egid}}</span></button></sc-for>
 <sc-if value="{{noMatch}}" hint-placeholder-val="{{ false }}"><p style="padding:8px 10px">No building found for this address. Check the spelling or try the postcode.</p></sc-if>
 </div>
-<div class="kc-addr-foot">Sources: swisstopo address search, swissBUILDINGS3D for the shape, the Federal Register of Buildings and Dwellings for floors and units. Rents, occupancy and value are demo data until connected.</div>
+<div class="kc-addr-foot">Sources: swisstopo address search and the Federal Register of Buildings and Dwellings for footprint, floors, units and build year. The massing is approximate. Rents, occupancy and value are demo data until connected.</div>
 </div>
 </sc-if>
 

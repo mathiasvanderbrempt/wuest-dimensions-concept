@@ -57,17 +57,17 @@
       }
       return;
     }
-    var el = document.importNode(n, false);
+    // build the element empty and set attributes one by one, so a raw "{{hole}}" never reaches an SVG attribute parser
+    var el = document.createElementNS(n.namespaceURI, n.localName);
     for (var k = 0; k < n.attributes.length; k++) {
       var a = n.attributes[k], name = a.name, val = a.value;
-      if (name === 'hint-placeholder-val' || name === 'hint-placeholder-count') { el.removeAttribute(name); continue; }
+      if (name === 'hint-placeholder-val' || name === 'hint-placeholder-count') continue;
       if (EVENTS[name.toLowerCase()]) {
-        el.removeAttribute(name);
         var fn = lookup(single(val) || '', scope);
         if (typeof fn === 'function') el.addEventListener(EVENTS[name.toLowerCase()], fn);
         continue;
       }
-      if (!hasHole(val)) continue;
+      if (!hasHole(val)) { if (a.namespaceURI) el.setAttributeNS(a.namespaceURI, name, val); else el.setAttribute(name, val); continue; }
       var one = single(val);
       if (one != null) {
         var v = lookup(one, scope);
@@ -82,10 +82,15 @@
 
   function pathOf(el, root) {
     var p = [];
-    while (el && el !== root) { var i = 0, s = el; while ((s = s.previousSibling)) i++; p.unshift(i); el = el.parentNode; }
+    // nodes added after render (app.js chrome, marked __inj) do not count, so a path stays valid across renders
+    while (el && el !== root) { var i = 0, s = el; while ((s = s.previousSibling)) if (!s.__inj) i++; p.unshift(i); el = el.parentNode; }
     return el === root ? p : null;
   }
-  function atPath(root, p) { var el = root; for (var i = 0; i < p.length && el; i++) el = el.childNodes[p[i]]; return el; }
+  function atPath(root, p) {
+    var el = root;
+    for (var i = 0; i < p.length && el; i++) { var c = el.firstChild, k = p[i]; while (c && (c.__inj || k-- > 0)) c = c.nextSibling; el = c; }
+    return el;
+  }
 
   function DCLogic() { this.state = {}; }
   DCLogic.prototype.setState = function (patch) {
@@ -102,16 +107,17 @@
     var scheduled = false;
     function draw() {
       scheduled = false;
-      var active = document.activeElement, path = root.contains(active) ? pathOf(active, root) : null;
+      var active = document.activeElement, keep = active && active.__inj ? active : null, path = !keep && root.contains(active) ? pathOf(active, root) : null;
       var selS = active && 'selectionStart' in active ? active.selectionStart : null;
       var frag = document.createDocumentFragment();
       renderChildren(tpl.content, frag, comp.renderVals() || {}, false);
       root.replaceChildren(frag);
+      if (window.KartaApp && window.KartaApp.afterRender) window.KartaApp.afterRender(root);
       if (path) {
         var el = atPath(root, path);
         if (el && el.focus) { el.focus({ preventScroll: true }); if (selS != null && el.setSelectionRange) try { el.setSelectionRange(selS, selS); } catch (e) {} }
       }
-      if (window.KartaApp && window.KartaApp.afterRender) window.KartaApp.afterRender(root);
+      if (keep && keep.isConnected) keep.focus({ preventScroll: true });
     }
     comp.__render = function () { if (!scheduled) { scheduled = true; requestAnimationFrame(draw); } };
     draw();
